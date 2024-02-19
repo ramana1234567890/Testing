@@ -9,12 +9,15 @@ pipeline {
             }
         }
 
-        stage('Build') {
+      stage('Build') {
             steps {
-                // Example build steps, you can replace this with your build tool commands
-                sh 'mvn clean install'
-            }
-        }
+               // Use the configured Maven tool
+               withMaven(maven: 'Maven') {
+               sh 'mvn clean install'
+           }
+       }
+  }
+
 
         stage('SonarQube Analysis') {
             steps {
