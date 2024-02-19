@@ -1,0 +1,52 @@
+pipeline {
+    agent any
+
+    stages {
+        stage('SCM') {
+            steps {
+                // Checkout the code from the version control system (e.g., Git)
+                checkout scm
+            }
+        }
+
+        stage('Build') {
+            steps {
+                // Example build steps, you can replace this with your build tool commands
+                sh 'mvn clean install'
+            }
+        }
+
+        stage('SonarQube Analysis') {
+            steps {
+                script {
+                    // Define SonarQube scanner tool
+                    def scannerHome = tool 'Sonarqube'
+
+                    // Set up SonarQube environment
+                    withSonarQubeEnv() {
+                        // Execute SonarQube scanner
+                        sh "${scannerHome}/bin/sonar-scanner"
+                    }
+                }
+            }
+        }
+
+        stage('Deploy') {
+            steps {
+                // Example deployment steps, replace this with your deployment commands
+                sh 'echo "Deploying the application"'
+            }
+        }
+    }
+
+    post {
+        success {
+            // Actions to be performed on successful build and analysis
+            echo 'Build and SonarQube analysis were successful!'
+        }
+        failure {
+            // Actions to be performed on build or analysis failure
+            echo 'Build or SonarQube analysis failed!'
+        }
+    }
+}
